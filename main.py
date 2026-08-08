@@ -1,18 +1,20 @@
 import tkinter as tk
 from tkinter import ttk
 
-# Terrain types and their symbols (for display)
+# Terrain types and their abbreviations
 TERRAIN_TYPES = {
     "Leer": "",
-    "Wald": "🌳",
-    "Dorf": "🏡",
-    "Wasser": "💧",
-    "Berg": "⛰️",
-    "Farm": "🌾",
-    "Ruine": "🏛️",
-    "Monster": "👹",
-    "Straße": "🛣️"
+    "Wald": "WA",
+    "Dorf": "DO",
+    "Wasser": "WA",
+    "Berg": "BE",
+    "Farm": "FA",
+    "Ruine": "RU",
+    "Monster": "MO"
 }
+
+# Rename "WA" for Wasser to avoid conflict
+TERRAIN_TYPES["Wasser"] = "WS"
 
 
 class CartographersGUI:
@@ -20,7 +22,9 @@ class CartographersGUI:
         self.root = root
         self.size = size
         self.grid = [["Leer" for _ in range(size)] for _ in range(size)]
+        self.dynamic_grid = [["Leer" for _ in range(size)] for _ in range(size)]
         self.buttons = {}
+        self.labels = {}
 
         self.setup_ui()
 
@@ -32,15 +36,25 @@ class CartographersGUI:
         # Create the grid
         for row in range(self.size):
             for col in range(self.size):
+                # Frame to hold both the button and the label
+                cell_frame = tk.Frame(main_frame, bd=1, relief=tk.RAISED)
+                cell_frame.grid(row=row, column=col, padx=1, pady=1)
+
+                # Button for terrain selection
                 button = tk.Button(
-                    main_frame,
+                    cell_frame,
                     text="",
                     width=4,
-                    height=2,
+                    height=1,
                     command=lambda r=row, c=col: self.on_cell_click(r, c)
                 )
-                button.grid(row=row, column=col, padx=1, pady=1)
+                button.pack()
                 self.buttons[(row, col)] = button
+
+                # Label for dynamic terrain type
+                label = tk.Label(cell_frame, text="", width=4, height=1)
+                label.pack()
+                self.labels[(row, col)] = label
 
         # Add a label for instructions
         tk.Label(
@@ -60,13 +74,12 @@ class CartographersGUI:
 
     def set_terrain(self, row, col, terrain):
         self.grid[row][col] = terrain
-        symbol = TERRAIN_TYPES[terrain]
-        self.buttons[(row, col)].config(text=symbol)
+        abbreviation = TERRAIN_TYPES[terrain]
+        self.buttons[(row, col)].config(text=abbreviation)
 
-    def update_dynamic_terrain(self, row, col):
-        # Placeholder for dynamic terrain logic
-        # Example: If a village is next to water, turn it into a dock
-        pass
+        # Set dynamic terrain label to match the base terrain for now
+        self.dynamic_grid[row][col] = terrain
+        self.labels[(row, col)].config(text=abbreviation)
 
 
 if __name__ == "__main__":
