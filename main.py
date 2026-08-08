@@ -1,25 +1,22 @@
 import tkinter as tk
-from tkinter import ttk
 
 # Terrain types and their abbreviations
 TERRAIN_TYPES = {
     "Leer": "",
     "Wald": "WA",
     "Dorf": "DO",
-    "Wasser": "WA",
+    "Wasser": "WS",
     "Berg": "BE",
     "Farm": "FA",
     "Ruine": "RU",
     "Monster": "MO"
 }
 
-# Rename "WA" for Wasser to avoid conflict
-TERRAIN_TYPES["Wasser"] = "WS"
 
 
 class CartographersGUI:
-    def __init__(self, root, size=11):
-        self.root = root
+    def __init__(self, _root, size=11):
+        self.root = _root
         self.size = size
         self.grid = [["Leer" for _ in range(size)] for _ in range(size)]
         self.dynamic_grid = [["Leer" for _ in range(size)] for _ in range(size)]
