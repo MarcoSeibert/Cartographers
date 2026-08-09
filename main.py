@@ -13,11 +13,12 @@ class BoardModel:
             "Leer": "",
             "Wald": "WA",
             "Dorf": "DO",
+            "Acker": "AC",
             "Wasser": "WS",
-            "Berg": "BE",
-            "Farm": "FA",
+            "Monster": "MO",
+            "Gebirge": "GE",
             "Ruine": "RU",
-            "Monster": "MO"
+            "Held": "HE"
         }
 
     def set_terrain(self, row, col, terrain):
