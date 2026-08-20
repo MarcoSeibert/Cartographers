@@ -69,30 +69,28 @@ class BoardView:
             self.canvas.delete(f"{terrain_type}_{row}_{col}")
 
     def draw_terrain(self, connected_fields, terrain_type):
+        # Lösche alle Pinsel in den verbundenen Feldern
         for row, col in connected_fields:
             self.canvas.delete(f"{terrain_type}_{row}_{col}")
 
         if not connected_fields:
             return
 
-        min_row = min(field[0] for field in connected_fields)
-        max_row = max(field[0] for field in connected_fields)
-        min_col = min(field[1] for field in connected_fields)
-        max_col = max(field[1] for field in connected_fields)
-
-        area_x = min_col * self.cell_size
-        area_y = min_row * self.cell_size
-        area_width = (max_col - min_col + 1) * self.cell_size
-        area_height = (max_row - min_row + 1) * self.cell_size
-
+        # Anzahl der Pinsel proportional zur Anzahl der Felder (8 pro Feld)
         pinsel_count = len(connected_fields) * 8
 
+        # Verteile Pinsel über die verbundenen Felder
         all_pinsels = []
         for _ in range(pinsel_count):
             pinsel = random.choice(self.pinsel_images[terrain_type])
-            x = area_x + random.randint(-7, area_width + 7 - 15)
-            y = area_y + random.randint(-7, area_height + 7 - 15)
+            # Wähle zufällig ein Feld aus den verbundenen Feldern
+            row, col = random.choice(list(connected_fields))
+            # Platziere den Pinsel zufällig im Feld (inkl. 7 Pixel Überlappung)
+            x = col * self.cell_size + random.randint(-7, self.cell_size + 7 - 15)
+            y = row * self.cell_size + random.randint(-7, self.cell_size + 7 - 15)
+            # Prüfe, ob der Pinsel innerhalb der Canvas liegt
             if 0 <= x < self.canvas_width - 15 and 0 <= y < self.canvas_height - 15:
+                # Bestimme alle Felder, die der Pinsel berührt
                 row_start = y // self.cell_size
                 row_end = (y + 14) // self.cell_size
                 col_start = x // self.cell_size
@@ -106,8 +104,10 @@ class BoardView:
 
                 all_pinsels.append((pinsel, x, y, touched_fields))
 
+        # Sortiere nach y-Koordinate (Hintergrund → Vordergrund)
         all_pinsels.sort(key=lambda item: item[2])
 
+        # Zeichne alle Pinsel
         for pinsel, x, y, touched_fields in all_pinsels:
             tags = [f"{terrain_type}_{r}_{c}" for r, c in touched_fields]
             self.canvas.create_image(
